@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.2](https://github.com/ecomplus/application-starter/compare/v1.1.1...v1.1.2) (2024-10-31)
+
+
+### Bug Fixes
+
+* **create-transaction:** add test to pix ([e984ab2](https://github.com/ecomplus/application-starter/commit/e984ab2c73a240654875f6db3f663f38a080c23d))
+* **create-transaction:** add url in payment_link if banking billet ([55dfc65](https://github.com/ecomplus/application-starter/commit/55dfc659adafd0840514ce1e69ba4dd0768253b6))
+* **create-transaction:** remove test to pix and billet ([b28dc4e](https://github.com/ecomplus/application-starter/commit/b28dc4e33c290a72d6d05b5a6ef92c98e2e1f70a))
+* **create-transaction:** remove unnecessary comments ([cf930b0](https://github.com/ecomplus/application-starter/commit/cf930b0fc653ca9979050a8049115141854bc089))
+* **create-transaction:** set pending status in pix and billet banking ([ffed6e1](https://github.com/ecomplus/application-starter/commit/ffed6e11e7733f069d60ba88e1e808b4cda6f88b))
+* **create-transaction:** set timeout 28000ms ([91f9d8d](https://github.com/ecomplus/application-starter/commit/91f9d8df5b70308d94eac4384ab32947f5ef87d9))
+* **create-transaction:** set voided status in case of error when creating pix in intermediator ([fbe3fab](https://github.com/ecomplus/application-starter/commit/fbe3fabaa2044af512d96b9cbed2636bce8657b5))
+* **create-transaction:** triggers error if braspag api does not complete transaction, add timeout ([6168c91](https://github.com/ecomplus/application-starter/commit/6168c914114308d911ddbaaf8604149f8233ae14))
+* **list-payments:** fix amount ([e216bbb](https://github.com/ecomplus/application-starter/commit/e216bbb9a71cfd270536584dfcc698d572de2164))
+* **list-payments:** rename field fingerprint ([0b784bb](https://github.com/ecomplus/application-starter/commit/0b784bb575d2c99da84134e1edf2f1bb8a113f26))
+* minor typo fixes on admin settings ([5a3485a](https://github.com/ecomplus/application-starter/commit/5a3485aa0254a5fce68e469e78938946f2b5e141))
+* onload experession code style and minor fixes ([a6d7445](https://github.com/ecomplus/application-starter/commit/a6d7445b685854e39ce7dc441ad693e14d6b3b10))
+* onload expression without async/await for better browser support ([d839139](https://github.com/ecomplus/application-starter/commit/d839139090eb8b0eb604e75bd59909f76aaf532d))
+* **onload-expression:** update script to capture fingerPrintId and improvements in code writing ([efce0ee](https://github.com/ecomplus/application-starter/commit/efce0ee6b2e6ded73198ff6df75672bff4499c98))
+* **payload-transaction:** add birth_date customer ([6d0bf56](https://github.com/ecomplus/application-starter/commit/6d0bf56e034d0c9dd518c05b2eb230bd51c9dfed))
+* **payload-transaction:** back birth_date in creditCard ([e1ba434](https://github.com/ecomplus/application-starter/commit/e1ba4349dcb5b3c57380e1ef08dd1006020ca5eb))
+* **payload-transaction:** check birth_date ([f0cc29a](https://github.com/ecomplus/application-starter/commit/f0cc29a85e29be83780809a150172bdc110b97b1))
+* **payload-transaction:** check birth_date ([9a7ef6c](https://github.com/ecomplus/application-starter/commit/9a7ef6cb062a88dc0f3a66b8d5394c1527490d74))
+* properly send default discount option (if any) on list payments response ([bc570a8](https://github.com/ecomplus/application-starter/commit/bc570a8a11ff9b20532562a953e4b126788c62df))
+* unset auto capture in favor of `CaptureOnLowRisk` on fraud sequence `AuthorizeFirst` ([9d3e88b](https://github.com/ecomplus/application-starter/commit/9d3e88bd449729a9a654d19144a687468fd5b274))
+* **webhook-braspag:** check date notification ([08d29f6](https://github.com/ecomplus/application-starter/commit/08d29f677f1aa769b8f7a328975f8ede370c7f0e))
+* **webhook-braspag:** check date notification ([d767c77](https://github.com/ecomplus/application-starter/commit/d767c77cd56163c9e147d1a8baae2080a9750133))
+* **webhook-braspag:** remove debug and add comment ([4321df9](https://github.com/ecomplus/application-starter/commit/4321df9eb23ac94152021abaebbbd769444f8015))
+
 ### [1.1.1](https://github.com/ecomplus/application-starter/compare/v1.1.0...v1.1.1) (2024-06-26)
 
 
