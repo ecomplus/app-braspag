@@ -161,16 +161,16 @@ const app = {
         type: 'boolean',
         title: 'Análise antifraude primeiro',
         default: false,
-        description: 'Se ativo, análisa antifraude antes de autorizar as transações'
+        description: 'Se ativo, analisa antifraude antes de autorizar as transações'
       },
       hide: false
     },
-    is_analyse_always:{
+    is_analyse_always: {
       schema: {
         type: 'boolean',
-        title: 'Análise antifraude em todas transações',
+        title: 'Antifraude em todas transações',
         default: false,
-        description: 'Se ativo, análisa antifraude ocorre mesmos em transações rejeitadas.'
+        description: 'Se ativo, executa análise antifraude mesmo em transações rejeitadas pelo banco'
       },
       hide: false
     },
