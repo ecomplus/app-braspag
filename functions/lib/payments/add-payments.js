@@ -2,7 +2,9 @@ module.exports = (amount, installments = {}, gateway = {}, response) => {
   const maxInterestFree = installments.max_interest_free
   const minInstallment = installments.min_installment || 5
   const qtyPosssibleInstallment = Math.floor((amount.total / minInstallment))
-  const maxInstallments = installments.max_number || (qtyPosssibleInstallment < 12 ? qtyPosssibleInstallment : 12)
+  const maxInstallments = installments.max_number
+    ? Math.min(installments.max_number, qtyPosssibleInstallment)
+    : Math.max(qtyPosssibleInstallment, 12)
   const monthlyInterest = installments.monthly_interest || 0
 
   if (maxInstallments > 1) {
