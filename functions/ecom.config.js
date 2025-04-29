@@ -216,6 +216,47 @@ const app = {
       },
       hide: true
     },
+    braspag_3ds: {
+      schema: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          client_id: {
+            type: 'string',
+            maxLength: 255,
+            title: 'ClientId do 3DS'
+          },
+          client_secret: {
+            type: 'string',
+            maxLength: 255,
+            title: 'ClientSecret do 3DS'
+          },
+          establishment_code: {
+            type: 'string',
+            minLength: 10,
+            maxLength: 10,
+            title: 'Código do estabelecimento',
+            description: 'Código numérico do estabelecimento do Cielo E-Commerce'
+          },
+          merchant_name: {
+            type: 'string',
+            maxLength: 25,
+            title: 'Código do estabelecimento',
+            description: 'Nome do estabelecimento registrado na adquirente'
+          },
+          mcc: {
+            type: 'string',
+            minLength: 4,
+            maxLength: 4,
+            title: 'Código de categoria',
+            description: 'Código numérico da categoria do estabelecimento'
+          },
+        },
+        title: 'Autenticação 3DS',
+        description: 'Credenciais do 3DS para script de autenticação'
+      },
+      hide: true
+    },
     credit_card: {
       schema: {
         type: 'object',

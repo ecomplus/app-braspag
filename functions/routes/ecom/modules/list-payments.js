@@ -3,6 +3,7 @@ const path = require('path')
 const { /* hostingUri, */ isSandbox } = require('../../../__env')
 const addInstallments = require('../../../lib/payments/add-payments')
 const TokenSOPBraspag = require('../../../lib/braspag/sop/get-access-token')
+const get3dsToken = require('../../../lib/braspag/3ds/get-3ds-token')
 const { logger } = require('../../../context')
 
 exports.post = async ({ appSdk }, req, res) => {
@@ -188,6 +189,22 @@ exports.post = async ({ appSdk }, req, res) => {
           cc_hash: {
             function: '_braspagHashCard',
             is_promise: true
+          }
+        }
+        if (appData.braspag_3ds?.client_id && appData.braspag_3ds.client_secret) {
+          const a3dsToken = await get3dsToken({
+            storeId,
+            clientId: appData.braspag_3ds.client_id,
+            clientSecret: appData.braspag_3ds.client_secret,
+            EstablishmentCode: appData.braspag_3ds.establishment_code,
+            MerchantName: appData.braspag_3ds.merchant_name,
+            MCC: appData.braspag_3ds.mcc
+          })
+            .catch(logger.warn)
+          if (a3dsToken) {
+            gateway.js_client.onload_expression = `window._braspag3dsToken="${a3dsToken.accessToken}";` +
+              `window._braspag3dsIsSandbox=${a3dsToken.isSandbox};` +
+              gateway.js_client.onload_expression
           }
         }
         const { installments } = appData

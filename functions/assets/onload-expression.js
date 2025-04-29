@@ -27,7 +27,6 @@
     scriptElement.innerHTML = scriptContent
     document.body.appendChild(scriptElement)
   }
-
   injectClearSaleScript(fingerprintApp)
 
   window._braspagHashCard = function (cardClient) {
@@ -59,6 +58,10 @@
           if (response.PaymentToken) {
             const data = JSON.stringify({ token: response.PaymentToken, fingerPrintId })
             resolve(window.btoa(data))
+            if (window._braspag3dsToken) {
+              window._braspag3dsCard = { ...cardClient, fingerPrintId }
+              delete window._braspag3dsCard.cvc
+            }
           } else {
             const error = new Error('Payment Token not found. Please try again or refresh the page.')
             reject(error)
@@ -79,5 +82,12 @@
       }
       window.bpSop_silentOrderPost(options)
     })
+  }
+
+  if (window._braspag3dsToken) {
+    const script3ds = document.createElement('script')
+    script3ds.src = 'https://ecom-braspag.web.app/dist/3ds-client.min.js'
+    script3ds.async = true
+    document.body.appendChild(script3ds)
   }
 }())

@@ -4,9 +4,12 @@ const parseFraudAnalysis = (appData, params, Address, fingerPrintId) => {
   const { amount, buyer, items } = params
   const isAnalyseFirst = Boolean(appData.is_analyse_first)
   const isAnalyseAlways = Boolean(appData.is_analyse_always)
+  const isWith3ds = Boolean(appData.braspag_3ds?.client_id && appData.braspag_3ds.client_secret)
   const fraudAnalysis = {
     Sequence: isAnalyseFirst ? 'AnalyseFirst' : 'AuthorizeFirst',
     SequenceCriteria: isAnalyseFirst ? 'Always' : (isAnalyseAlways ? 'Always' : 'OnSuccess'),
+    CaptureOnLowRisk: !isAnalyseFirst && !isWith3ds,
+    VoidOnHighRisk: !isAnalyseFirst && !isWith3ds,
     Provider: 'ClearSale',
     TotalOrderAmount: (amount.total * 100),
     FingerPrintId: fingerPrintId,
@@ -29,10 +32,6 @@ const parseFraudAnalysis = (appData, params, Address, fingerPrintId) => {
         }
       })
     }
-  }
-  if (!isAnalyseFirst) {
-    fraudAnalysis.CaptureOnLowRisk = true
-    fraudAnalysis.VoidOnHighRisk = true
   }
   return fraudAnalysis
 }
