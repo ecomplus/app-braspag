@@ -81,7 +81,8 @@ exports.post = async ({ appSdk }, req, res) => {
   }
 
   const { discount } = appData
-  listPaymentMethod.forEach(async paymentMethod => {
+  for (let i = 0; i < listPaymentMethod.length; i++) {
+    const paymentMethod = listPaymentMethod[i]
     const isPix = paymentMethod === 'account_deposit'
     const isCreditCard = paymentMethod === 'credit_card'
     const methodConfig = appData[paymentMethod] || {}
@@ -215,6 +216,6 @@ exports.post = async ({ appSdk }, req, res) => {
       }
       response.payment_gateways.push(gateway)
     }
-  })
+  }
   res.send(response)
 }
