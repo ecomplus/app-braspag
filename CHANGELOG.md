@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/ecomplus/application-starter/compare/v1.1.2...v1.2.0) (2025-04-29)
+
+
+### Features
+
+* adding support for credit card 3ds auth ([7a4838c](https://github.com/ecomplus/application-starter/commit/7a4838ce98e6b55610e92d53720d259d745cf004))
+
+
+### Bug Fixes
+
+* **deps:** update all non-major ([#16](https://github.com/ecomplus/application-starter/issues/16)) ([a3560e7](https://github.com/ecomplus/application-starter/commit/a3560e7965e42883bcd24e367c2e1455707884f6))
+* **deps:** update all non-major ([#18](https://github.com/ecomplus/application-starter/issues/18)) ([c18f20a](https://github.com/ecomplus/application-starter/commit/c18f20a1e14ba2c3df7723e84a8d5fb80124f7ce))
+* **deps:** update all non-major ([#20](https://github.com/ecomplus/application-starter/issues/20)) ([1e419e0](https://github.com/ecomplus/application-starter/commit/1e419e03d06b98457430b6ca4f0fb9bf3b600bdf))
+* limit address component string size to 20 chars ([7bf7d1e](https://github.com/ecomplus/application-starter/commit/7bf7d1e6f30d52cf97476e50f951a439d0fc554c))
+* properly setting `instalment_options` with configured min installment ([68116ce](https://github.com/ecomplus/application-starter/commit/68116ce5cff32d03d7a296a0384c8269ab5df151))
+
 ### [1.1.2](https://github.com/ecomplus/application-starter/compare/v1.1.1...v1.1.2) (2024-10-31)
 
 
