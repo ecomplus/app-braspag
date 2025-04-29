@@ -64,7 +64,7 @@ module.exports = function (clientId, clientSecret, merchantId, storeId, isSandbo
       logger.info(`> Braspag SOP #${storeId} ${isSandbox ? 'SandBox' : ''}`)
       auth(clientId, clientSecret, merchantId, storeId, isSandbox)
         .then((data) => {
-          logger.info('> Braspag SOP Token Update')
+          logger.info('> Braspag SOP token update')
           authenticate(data.accessToken)
           const expiresInToString = new Date(data.expiresIn).toISOString()
           if (documentRef) {

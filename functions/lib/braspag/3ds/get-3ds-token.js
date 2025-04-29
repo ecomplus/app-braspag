@@ -37,6 +37,7 @@ module.exports = function ({
             throw error
           }
           authenticate(data.access_token)
+          logger.info('> Braspag 3DS token update')
           documentRef.set({
             accessToken: data.accessToken,
             expiresAt: Date.now() + (Number(data.expires_in) || 120) * 1000,
