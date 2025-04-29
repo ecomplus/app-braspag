@@ -36,14 +36,15 @@ module.exports = function ({
             error.data = data
             throw error
           }
-          authenticate(data.access_token)
-          logger.info('> Braspag 3DS token update')
           documentRef.set({
-            accessToken: data.accessToken,
+            accessToken: data.access_token,
             expiresAt: Date.now() + (Number(data.expires_in) || 120) * 1000,
             isSandbox
           })
             .catch(logger.error)
+            .finally(() => {
+              authenticate(data.access_token)
+            })
         })
         .catch(reject)
     }

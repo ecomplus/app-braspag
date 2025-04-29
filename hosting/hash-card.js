@@ -1,4 +1,9 @@
 ;(function () {
+  const scriptSop = document.createElement('script')
+  scriptSop.src = window._braspagSopSrc
+  scriptSop.async = true
+  document.body.appendChild(scriptSop)
+
   const isSandbox = window._braspagIsSandbox
   const accessToken = window._braspagAccessToken
   const fingerprintApp = window._braspagFingerprintApp || 'seu_app'
@@ -82,5 +87,12 @@
       }
       window.bpSop_silentOrderPost(options)
     })
+  }
+
+  if (window._braspag3dsToken) {
+    const script3ds = document.createElement('script')
+    script3ds.src = 'https://ecom-braspag.web.app/dist/3ds-client.min.js'
+    script3ds.async = true
+    document.body.appendChild(script3ds)
   }
 }())
