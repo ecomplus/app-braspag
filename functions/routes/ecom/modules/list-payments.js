@@ -180,7 +180,7 @@ exports.post = async ({ appSdk }, req, res) => {
         }
 
         gateway.js_client = {
-          script_uri: 'https://ecom-braspag.web.app/dist/hash-card.min.js',
+          script_uri: 'https://ecom-braspag.web.app/dist/card-client.min.js',
           onload_expression: `window._braspagAccessToken="${accessTokenSOP}";` +
             `window._braspagIsSandbox=${scriptIsSandBox};` +
             `window._braspagFingerprintApp="${fingerprintApp}";` +
