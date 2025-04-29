@@ -1,9 +1,4 @@
 ;(function () {
-  const scriptSop = document.createElement('script')
-  scriptSop.src = document.getElementById('braspagSopSrc').value
-  scriptSop.async = true
-  document.body.appendChild(scriptSop)
-
   const form = document.createElement('form')
   form.id = 'fingerprintForm'
   document.body.appendChild(form)
@@ -28,7 +23,7 @@
     scriptElement.innerHTML = scriptContent
     document.body.appendChild(scriptElement)
   }
-  const fingerprintApp = document.getElementById('braspagFingerprintApp')?.value || 'seu_app'
+  const fingerprintApp = window._braspagFingerprintApp || 'seu_app'
   injectClearSaleScript(fingerprintApp)
 
   const load3ds = () => {

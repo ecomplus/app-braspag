@@ -1,3 +1,5 @@
+const fs = require('fs')
+const path = require('path')
 const { /* hostingUri, */ isSandbox } = require('../../../__env')
 const addInstallments = require('../../../lib/payments/add-payments')
 const TokenSOPBraspag = require('../../../lib/braspag/sop/get-access-token')
@@ -180,13 +182,11 @@ exports.post = async ({ appSdk }, req, res) => {
         }
 
         gateway.js_client = {
-          script_uri: 'https://ecom-braspag.web.app/dist/card-client.min.js',
-          container_html: '<input type="hidden" id="braspagSopSrc"' +
-            ` value="${baseScriptUri}/post/scripts/silentorderpost-1.0.min.js">` +
-            '<input type="hidden" id="braspagFingerprintApp"' +
-            ` value="${fingerprintApp}">`,
+          script_uri: `${baseScriptUri}/post/scripts/silentorderpost-1.0.min.js`,
           onload_expression: `window._braspagAccessToken="${accessTokenSOP}";` +
-            `window._braspagIsSandbox=${scriptIsSandBox};`,
+            `window._braspagIsSandbox=${scriptIsSandBox};` +
+            `window._braspagFingerprintApp="${fingerprintApp}";` +
+            fs.readFileSync(path.join(__dirname, '../../../assets/dist/onload-expression.min.js'), 'utf8'),
           cc_hash: {
             function: '_braspagHashCard',
             is_promise: true
