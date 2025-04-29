@@ -31,6 +31,11 @@ module.exports = function ({
         }
       })
         .then((data) => {
+          if (!data.access_token) {
+            const error = new Error('Cannot generate 3DS token')
+            error.data = data
+            throw error
+          }
           authenticate(data.access_token)
           documentRef.set({
             accessToken: data.accessToken,
@@ -48,6 +53,7 @@ module.exports = function ({
           isSandbox === documentSnapshot.get('isSandbox') &&
           Date.now() < documentSnapshot.get('expiresAt')
         ) {
+          logger.info(`Restored 3DS token for ${storeId}`)
           authenticate(documentSnapshot.get('accessToken'))
         } else {
           handleAuth()
