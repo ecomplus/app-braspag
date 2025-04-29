@@ -202,6 +202,7 @@ exports.post = async ({ appSdk }, req, res) => {
             MCC: appData.braspag_3ds.mcc
           })
             .catch(logger.warn)
+          logger.info(`#${storeId} 3DS`, { a3dsToken })
           if (a3dsToken?.accessToken) {
             gateway.js_client.onload_expression = `window._braspag3dsToken="${a3dsToken.accessToken}";` +
               `window._braspag3dsIsSandbox=${a3dsToken.isSandbox};` +
