@@ -181,10 +181,10 @@ exports.post = async ({ appSdk }, req, res) => {
 
         gateway.js_client = {
           script_uri: 'https://ecom-braspag.web.app/dist/card-client.min.js',
-          container_html: `<script>
-            window._braspagSopSrc="${baseScriptUri}/post/scripts/silentorderpost-1.0.min.js";
-            window._braspagFingerprintApp="${fingerprintApp}";
-          </script>`,
+          container_html: '<input type="hidden" id="braspagSopSrc"' +
+            ` value="${baseScriptUri}/post/scripts/silentorderpost-1.0.min.js">` +
+            '<input type="hidden" id="braspagFingerprintApp"' +
+            ` value="${fingerprintApp}">`,
           onload_expression: `window._braspagAccessToken="${accessTokenSOP}";` +
             `window._braspagIsSandbox=${scriptIsSandBox};`,
           cc_hash: {
