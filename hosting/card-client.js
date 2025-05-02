@@ -31,7 +31,7 @@
     window._braspag3dsCard = null
     const settings = window.storefront?.settings | {}
 
-    const sendOrder = ({ order, transaction }) => {
+    const setup3dsForm = ({ order, transaction }) => {
       const form = document.createElement('form')
       form.id = 'braspag3ds'
       form.style.display = 'none'
@@ -113,9 +113,8 @@
       Object.keys(fields).forEach(function (className) {
         form.appendChild(createHiddenInput(className, fields[className]))
       })
-
       document.body.appendChild(form)
-      window.bpmpi_authenticate()
+      console.log('3ds form', form)
     }
 
     function getQueryString (field) {
@@ -130,31 +129,8 @@
       return {
         onReady: function () {
           // Evento indicando quando a inicialização do script terminou.
-          console.log('3ds ready')
-          const router = window.storefrontApp?.router
-          if (!router) return
-          const start3dsOnConfirmation = ({ name }) => {
-            if (name !== 'confirmation') return
-            setTimeout(() => {
-              const order = window.storefrontApp?.order
-              if (!order) return
-              const transaction = order.transactions?.find((_transaction) => {
-                return _transaction.payment_method?.code === 'credit_card'
-              })
-              switch (transaction?.status?.current) {
-                case 'under_analysis':
-                case 'unauthorized':
-                case 'voided':
-                  break
-                default:
-                  return
-              }
-              console.log('3ds send order')
-              sendOrder({ order, transaction })
-            }, 600)
-          }
-          router.afterEach(start3dsOnConfirmation)
-          if (router.currentRoute) start3dsOnConfirmation(router.currentRoute)
+          console.log('3ds onReady')
+          window.bpmpi_authenticate()
         },
         onSuccess: function (e) {
           // Cartão elegível para autenticação, e portador autenticou com sucesso.
@@ -185,12 +161,36 @@
       }
     }
 
-    const script = document.createElement('script')
-    script.src = window._braspag3dsIsSandbox
-      ? 'https://mpisandbox.braspag.com.br/Scripts/BP.Mpi.3ds20.min.js'
-      : 'https://mpi.braspag.com.br/Scripts/BP.Mpi.3ds20.min.js'
-    script.async = true
-    document.body.appendChild(script)
+    const router = window.storefrontApp?.router
+    if (!router) return
+    const start3dsOnConfirmation = ({ name }) => {
+      if (name !== 'confirmation') return
+      const order = window.storefrontApp?.order
+      if (!order) return
+      const transaction = order.transactions?.find((_transaction) => {
+        return _transaction.payment_method?.code === 'credit_card'
+      })
+      switch (transaction?.status?.current) {
+        case 'under_analysis':
+        case 'unauthorized':
+        case 'voided':
+          break
+        default:
+          return
+      }
+      console.log('3ds send order')
+      setup3dsForm({ order, transaction })
+      const script = document.createElement('script')
+      script.src = window._braspag3dsIsSandbox
+        ? 'https://mpisandbox.braspag.com.br/Scripts/BP.Mpi.3ds20.min.js'
+        : 'https://mpi.braspag.com.br/Scripts/BP.Mpi.3ds20.min.js'
+      script.async = true
+      document.body.appendChild(script)
+    }
+    router.afterEach(start3dsOnConfirmation)
+    if (router.currentRoute) {
+      start3dsOnConfirmation(router.currentRoute)
+    }
   }
 
   window._braspagHashCard = function (cardClient) {
@@ -227,6 +227,7 @@
             if (window._braspag3dsToken) {
               window._braspag3dsCard = { ...cardClient, fingerPrintId }
               delete window._braspag3dsCard.cvc
+              console.log('3ds load')
               load3ds()
             }
           } else {
