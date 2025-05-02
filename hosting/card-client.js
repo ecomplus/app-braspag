@@ -33,6 +33,7 @@
 
     const sendOrder = ({ order, transaction }) => {
       const form = document.createElement('form')
+      form.id = 'braspag3ds'
       form.style.display = 'none'
       const customer = window.ecomPassport?.getCustomer() || {}
       const buyer = order.buyers?.[0] || {}
@@ -129,9 +130,10 @@
       return {
         onReady: function () {
           // Evento indicando quando a inicialização do script terminou.
+          console.log('3ds ready')
           const router = window.storefrontApp?.router
           if (!router) return
-          router.afterEach(({ name }) => {
+          const start3dsOnConfirmation = ({ name }) => {
             if (name !== 'confirmation') return
             setTimeout(() => {
               const order = window.storefrontApp?.order
@@ -147,9 +149,12 @@
                 default:
                   return
               }
+              console.log('3ds send order')
               sendOrder({ order, transaction })
             }, 600)
-          })
+          }
+          router.afterEach(start3dsOnConfirmation)
+          if (router.currentRoute) start3dsOnConfirmation(router.currentRoute)
         },
         onSuccess: function (e) {
           // Cartão elegível para autenticação, e portador autenticou com sucesso.
