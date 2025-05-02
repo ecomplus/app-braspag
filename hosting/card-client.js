@@ -63,7 +63,7 @@
         bpmpi_accesstoken: window._braspag3dsToken,
         bpmpi_ordernumber: order.number,
         bpmpi_currency: 'BRL',
-        bpmpi_totalamount: transaction.amount,
+        bpmpi_totalamount: Math.round(transaction.amount * 100),
         bpmpi_installments: transaction.installments?.number || 1,
         bpmpi_paymentmethod: 'credit',
         bpmpi_cardnumber: cardClient.number,
@@ -108,7 +108,7 @@
         fields[`bpmpi_cart_${nItems}_name`] = item.name || item.sku
         fields[`bpmpi_cart_${nItems}_sku`] = item.sku
         fields[`bpmpi_cart_${nItems}_quantity`] = item.quantity
-        fields[`bpmpi_cart_${nItems}_unitprice`] = nItems
+        fields[`bpmpi_cart_${nItems}_unitprice`] = Math.round(price * 100)
       })
       Object.keys(fields).forEach(function (className) {
         form.appendChild(createHiddenInput(className, fields[className]))
@@ -164,9 +164,9 @@
     const router = window.storefrontApp?.router
     if (!router) return
     const start3dsOnConfirmation = ({ name }) => {
-      if (name !== 'confirmation') return
+      if (name !== 'confirmation') return false
       const order = window.storefrontApp?.order
-      if (!order) return
+      if (!order) return false
       const transaction = order.transactions?.find((_transaction) => {
         return _transaction.payment_method?.code === 'credit_card'
       })
@@ -176,20 +176,23 @@
         case 'voided':
           break
         default:
-          return
+          return false
       }
       console.log('3ds send order')
-      setup3dsForm({ order, transaction })
+      setup3dsForm({
+        order,
+        transaction
+      })
       const script = document.createElement('script')
       script.src = window._braspag3dsIsSandbox
         ? 'https://mpisandbox.braspag.com.br/Scripts/BP.Mpi.3ds20.min.js'
         : 'https://mpi.braspag.com.br/Scripts/BP.Mpi.3ds20.min.js'
       script.async = true
       document.body.appendChild(script)
+      return true
     }
-    router.afterEach(start3dsOnConfirmation)
-    if (router.currentRoute) {
-      start3dsOnConfirmation(router.currentRoute)
+    if (!router.currentRoute || !start3dsOnConfirmation(router.currentRoute)) {
+      router.afterEach(start3dsOnConfirmation)
     }
   }
 
