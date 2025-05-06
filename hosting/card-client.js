@@ -163,7 +163,9 @@
 
     const router = window.storefrontApp?.router
     if (!router) return
+    let is3dsSent = false
     const start3dsOnConfirmation = ({ name }) => {
+      if (is3dsSent) return true
       if (name !== 'confirmation') return false
       const order = window.storefrontApp?.order
       if (!order) return false
@@ -189,6 +191,7 @@
         : 'https://mpi.braspag.com.br/Scripts/BP.Mpi.3ds20.min.js'
       script.async = true
       document.body.appendChild(script)
+      is3dsSent = true
       return true
     }
     if (!router.currentRoute || !start3dsOnConfirmation(router.currentRoute)) {
