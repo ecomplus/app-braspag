@@ -29,7 +29,7 @@
   const load3ds = () => {
     const cardClient = window._braspag3dsCard
     window._braspag3dsCard = null
-    const settings = window.storefront?.settings | {}
+    const settings = window.storefront?.settings || {}
 
     const setup3dsForm = ({ order, transaction }) => {
       const form = document.createElement('form')
@@ -180,7 +180,7 @@
         default:
           return false
       }
-      console.log('3ds send order')
+      console.log('3ds send order', { order })
       setup3dsForm({
         order,
         transaction
