@@ -39,8 +39,6 @@
       const buyer = order.buyers?.[0] || {}
       const payer = { ...buyer, ...transaction.payer }
       const shippingAddress = order.shipping_lines?.[0]?.to || {}
-      console.log({ order, transaction })
-      console.log({ customer, buyer, payer, shippingAddress })
 
       const formatDate = (date) => {
         if (!date) return
@@ -166,33 +164,35 @@
     const router = window.storefrontApp?.router
     if (!router) return
     let is3dsSent = false
-    const start3dsOnConfirmation = ({ name }) => {
+    const start3dsOnConfirmation = ({ name, params }) => {
       if (is3dsSent) return true
-      if (name !== 'confirmation') return false
-      const order = window.storefrontApp?.order
-      if (!order) return false
-      const transaction = order.transactions?.find((_transaction) => {
-        return _transaction.payment_method?.code === 'credit_card'
-      })
-      switch (transaction?.status?.current) {
-        case 'under_analysis':
-        case 'unauthorized':
-        case 'voided':
-          break
-        default:
-          return false
-      }
-      console.log('3ds send order', { order })
-      setup3dsForm({
-        order,
-        transaction
-      })
-      const script = document.createElement('script')
-      script.src = window._braspag3dsIsSandbox
-        ? 'https://mpisandbox.braspag.com.br/Scripts/BP.Mpi.3ds20.min.js'
-        : 'https://mpi.braspag.com.br/Scripts/BP.Mpi.3ds20.min.js'
-      script.async = true
-      document.body.appendChild(script)
+      if (name !== 'confirmation' || !params.json) return false
+      setTimeout(() => {
+        const order = window.storefrontApp?.order
+        if (!order) return false
+        const transaction = order.transactions?.find((_transaction) => {
+          return _transaction.payment_method?.code === 'credit_card'
+        })
+        switch (transaction?.status?.current) {
+          case 'under_analysis':
+          case 'unauthorized':
+          case 'voided':
+            break
+          default:
+            return false
+        }
+        console.log('3ds send order')
+        setup3dsForm({
+          order,
+          transaction
+        })
+        const script = document.createElement('script')
+        script.src = window._braspag3dsIsSandbox
+          ? 'https://mpisandbox.braspag.com.br/Scripts/BP.Mpi.3ds20.min.js'
+          : 'https://mpi.braspag.com.br/Scripts/BP.Mpi.3ds20.min.js'
+        script.async = true
+        document.body.appendChild(script)
+      }, 600)
       is3dsSent = true
       return true
     }
