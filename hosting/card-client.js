@@ -39,7 +39,7 @@
       const buyer = order.buyers?.[0] || {}
       const payer = { ...buyer, ...transaction.payer }
       const shippingAddress = order.shipping_lines?.[0]?.to || {}
-      console.log(...order)
+      console.log({ order, transaction })
       console.log({ customer, buyer, payer, shippingAddress })
 
       const formatDate = (date) => {
