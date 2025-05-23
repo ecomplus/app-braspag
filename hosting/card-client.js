@@ -26,19 +26,20 @@
   const fingerprintApp = window._braspagFingerprintApp || 'seu_app'
   injectClearSaleScript(fingerprintApp)
 
-  const load3ds = () => {
+  const load3ds = () => new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(null)
+    }, 6000)
     const cardClient = window._braspag3dsCard
     window._braspag3dsCard = null
     const settings = window.storefront?.settings || {}
+    const { amount, customer, items } = window.storefrontApp
 
-    const setup3dsForm = ({ order, transaction }) => {
+    const setup3dsForm = async () => {
       const form = document.createElement('form')
       form.id = 'braspag3ds'
       form.style.display = 'none'
-      const customer = window.ecomPassport?.getCustomer() || {}
-      const buyer = order.buyers?.[0] || {}
-      const payer = { ...buyer, ...transaction.payer }
-      const shippingAddress = order.shipping_lines?.[0]?.to || {}
+      const shippingAddress = customer.addresses?.[0] || {}
 
       const formatDate = (date) => {
         if (!date) return
@@ -57,25 +58,32 @@
         return input
       }
 
+      const ipResponse = await fetch('https://api64.ipify.org/')
+      let ip64
+      if (ipResponse.ok) {
+        ip64 = await ipResponse.text()
+      }
+
+      // https://docs.cielo.com.br/gateway/docs/2-mapeando-as-classes
       const fields = {
         bpmpi_auth: true,
         bpmpi_auth_notifyonly: true,
         bpmpi_accesstoken: window._braspag3dsToken,
-        bpmpi_ordernumber: order.number,
+        bpmpi_ordernumber: `R${(Math.random() * (999999 - 199999) + 199999)}`,
         bpmpi_currency: 'BRL',
-        bpmpi_totalamount: Math.round(transaction.amount * 100),
-        bpmpi_installments: transaction.installments?.number || 1,
+        bpmpi_totalamount: Math.round(amount.total * 100),
+        bpmpi_installments: /* transaction.installments?.number */ 1,
         bpmpi_paymentmethod: 'credit',
         bpmpi_cardnumber: cardClient.number,
         bpmpi_cardexpirationmonth: cardClient.month.toString(),
         bpmpi_cardexpirationyear: `20${cardClient.year.toString()}`,
         bpmpi_default_card: true,
-        bpmpi_billto_customerid: payer.doc_number,
+        bpmpi_billto_customerid: customer.doc_number,
         bpmpi_merchant_newcustomer: customer.orders?.length > 1,
-        bpmpi_billto_contactname: payer.fullname || cardClient.name,
-        bpmpi_billto_name: payer.fullname || cardClient.name,
-        bpmpi_billto_phonenumber: payer.phone?.number || payer.phones?.[0]?.number,
-        bpmpi_billto_email: buyer.main_email,
+        bpmpi_billto_contactname: customer.fullname || cardClient.name,
+        bpmpi_billto_name: customer.fullname || cardClient.name,
+        bpmpi_billto_phonenumber: customer.phones?.[0]?.number,
+        bpmpi_billto_email: customer.main_email,
         bpmpi_billto_street1: shippingAddress.street || shippingAddress.line_address,
         bpmpi_billto_street2: shippingAddress.number,
         bpmpi_billto_city: shippingAddress.city,
@@ -83,11 +91,11 @@
         bpmpi_billto_country: shippingAddress.country_code || 'BR',
         bpmpi_billto_zipcode: shippingAddress.zip,
         bpmpi_shipto_sameasbillto: true,
-        bpmpi_device_ipaddress: order.browser_ip,
+        bpmpi_device_ipaddress: /* order.browser_ip */ ip64,
         bpmpi_device_1_fingerprint: cardClient.fingerPrintId,
         bpmpi_device_1_provider: 'clearsale',
         bpmpi_device_channel: 'Browser',
-        bpmpi_mdd1: order._id,
+        // bpmpi_mdd1: order._id,
         bpmpi_transaction_mode: 'S',
         bpmpi_merchant_url: settings.domain && `https://${settings.domain}`,
         bpmpi_order_recurrence: false,
@@ -99,7 +107,7 @@
         bpmpi_useraccount_changeddate: formatDate(customer.updated_at)
       }
       let nItems = 0
-      order.items?.forEach((item, i) => {
+      items?.forEach((item, i) => {
         if (!item.quantity || !item.sku) return
         const price = item.final_price || item.price
         if (!price) return
@@ -135,71 +143,47 @@
         onSuccess: function (e) {
           // Cartão elegível para autenticação, e portador autenticou com sucesso.
           console.log('3ds onSuccess', e)
+          resolve(0)
         },
         onFailure: function (e) {
           // Cartão elegível para autenticação, porém o portador finalizou com falha.
           console.log('3ds onFailure', e)
+          resolve(1)
         },
         onUnenrolled: function (e) {
           // Cartão não elegível para autenticação (não autenticável).
           console.log('3ds onUnenrolled', e)
+          resolve(2)
         },
         onDisabled: function () {
           // Loja não requer autenticação do portador (classe "bpmpi_auth" false -> autenticação desabilitada).
           console.log('3ds onDisabled')
+          resolve(3)
         },
         onError: function (e) {
           // Erro no processo de autenticação.
           console.log('3ds onError', e)
+          resolve(4)
         },
         onUnsupportedBrand: function (e) {
           // Bandeira não suportada para autenticação.
           console.log('3ds onUnsupportedBrand', e)
+          resolve(5)
         },
         Environment: env || 'SDB',
         Debug: true
       }
     }
 
-    const router = window.storefrontApp?.router
-    if (!router) return
-    let is3dsSent = false
-    const start3dsOnConfirmation = ({ name, params }) => {
-      if (is3dsSent) return true
-      if (name !== 'confirmation' || !params.json) return false
-      setTimeout(() => {
-        const order = window.storefrontApp?.order
-        if (!order) return false
-        const transaction = order.transactions?.find((_transaction) => {
-          return _transaction.payment_method?.code === 'credit_card'
-        })
-        switch (transaction?.status?.current) {
-          case 'under_analysis':
-          case 'unauthorized':
-          case 'voided':
-            break
-          default:
-            return false
-        }
-        console.log('3ds send order')
-        setup3dsForm({
-          order,
-          transaction
-        })
-        const script = document.createElement('script')
-        script.src = window._braspag3dsIsSandbox
-          ? 'https://mpisandbox.braspag.com.br/Scripts/BP.Mpi.3ds20.min.js'
-          : 'https://mpi.braspag.com.br/Scripts/BP.Mpi.3ds20.min.js'
-        script.async = true
-        document.body.appendChild(script)
-      }, 600)
-      is3dsSent = true
-      return true
-    }
-    if (!router.currentRoute || !start3dsOnConfirmation(router.currentRoute)) {
-      router.afterEach(start3dsOnConfirmation)
-    }
-  }
+    console.log('3ds send order')
+    setup3dsForm()
+    const script = document.createElement('script')
+    script.src = window._braspag3dsIsSandbox
+      ? 'https://mpisandbox.braspag.com.br/Scripts/BP.Mpi.3ds20.min.js'
+      : 'https://mpi.braspag.com.br/Scripts/BP.Mpi.3ds20.min.js'
+    script.async = true
+    document.body.appendChild(script)
+  })
 
   window._braspagHashCard = function (cardClient) {
     const isSandbox = window._braspagIsSandbox
@@ -231,12 +215,15 @@
         onSuccess (response) {
           if (response.PaymentToken) {
             const data = JSON.stringify({ token: response.PaymentToken, fingerPrintId })
-            resolve(window.btoa(data))
             if (window._braspag3dsToken) {
               window._braspag3dsCard = { ...cardClient, fingerPrintId }
               delete window._braspag3dsCard.cvc
               console.log('3ds load')
               load3ds()
+                .catch(console.error)
+                .finally(() => resolve(window.btoa(data)))
+            } else {
+              resolve(window.btoa(data))
             }
           } else {
             const error = new Error('Payment Token not found. Please try again or refresh the page.')
