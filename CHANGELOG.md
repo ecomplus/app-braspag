@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.1](https://github.com/ecomplus/application-starter/compare/v1.2.0...v1.2.1) (2025-05-23)
+
+
+### Bug Fixes
+
+* check current route and additional debugs for 3ds on card client ([3f979e4](https://github.com/ecomplus/application-starter/commit/3f979e41994bfc2ce2a3adb821796fed7c136d54))
+* check current route and additional debugs for 3ds on card client ([6930dfa](https://github.com/ecomplus/application-starter/commit/6930dfa1162d1ceda91970d1fb963e3d1de78fa3))
+* checking generated 3ds token on payments list ([b2e83ee](https://github.com/ecomplus/application-starter/commit/b2e83ee85348720c9203fd4543277df98f480e90))
+* fix handling 3ds token response ([1e405af](https://github.com/ecomplus/application-starter/commit/1e405afa790f0342f01f91dd1b467a336297f003))
+* formatting amounts on cents on 3ds form fields ([843f1b2](https://github.com/ecomplus/application-starter/commit/843f1b2fcc300b649fb12766e0ad2b045e1a9a3e))
+* preset sop script src and clearsale fingerprint app id on js client container html ([a2f2d88](https://github.com/ecomplus/application-starter/commit/a2f2d88118c8f97f178dafa6573e5a62d36f775d))
+* preset sop script src and clearsale fingerprint app id on js client container html ([cc0326c](https://github.com/ecomplus/application-starter/commit/cc0326c17062b5e36a19b7cf88e94ae9c680a7c8))
+* preset sop script src and clearsale fingerprint app id on js client container html ([89abed2](https://github.com/ecomplus/application-starter/commit/89abed2855bb94b5b361bd44fa7b2aa27417f762))
+* preventing duplicated 3ds calls ([d7f78d8](https://github.com/ecomplus/application-starter/commit/d7f78d81ffb9b73d542f6fc22003b83f3a4dcba2))
+* properly handling async payment methods on list payments (for 3ds) ([92d63e5](https://github.com/ecomplus/application-starter/commit/92d63e598655f47f5ae121a14d6c295d4b9ece73))
+* properly saving 3ds token to local firestore ([0b92d47](https://github.com/ecomplus/application-starter/commit/0b92d4772c050d48a9a1cd0c982cc965ff6eb84c))
+* refactoring card client script to setup and call 3ds script before transaction created ([65d5caa](https://github.com/ecomplus/application-starter/commit/65d5caa9340cf51b4a99f75a92f78283d1cfd7a6))
+* reverting credit card script onload expression ([d4309e7](https://github.com/ecomplus/application-starter/commit/d4309e75497a1a0f17cb85d202e45260a500c231))
+* separated braspag hash card script to include 3ds token on expression max length ([c8994bf](https://github.com/ecomplus/application-starter/commit/c8994bfbf42e71a7d70843b95f7cf829145ecdb7))
+* waiting full order for 3ds on card client ([d50038a](https://github.com/ecomplus/application-starter/commit/d50038adf0a65824d085915c8e87a4c996192357))
+
 ## [1.2.0](https://github.com/ecomplus/application-starter/compare/v1.1.2...v1.2.0) (2025-04-29)
 
 
