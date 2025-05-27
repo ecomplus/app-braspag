@@ -170,7 +170,7 @@
           console.log('3ds onUnsupportedBrand', e)
           resolve(5)
         },
-        Environment: env || 'SDB',
+        Environment: env || (window._braspag3dsIsSandbox ? 'SDB' : 'PRD'),
         Debug: true
       }
     }
