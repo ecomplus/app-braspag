@@ -58,10 +58,14 @@
         return input
       }
 
-      const ipResponse = await fetch('https://api64.ipify.org/')
       let ip64
-      if (ipResponse.ok) {
-        ip64 = await ipResponse.text()
+      try {
+        const ipResponse = await fetch('https://api64.ipify.org/')
+        if (ipResponse.ok) {
+          ip64 = await ipResponse.text()
+        }
+      } catch {
+        //
       }
 
       // https://docs.cielo.com.br/gateway/docs/2-mapeando-as-classes
@@ -176,13 +180,14 @@
     }
 
     console.log('3ds send order')
-    setup3dsForm()
-    const script = document.createElement('script')
-    script.src = window._braspag3dsIsSandbox
-      ? 'https://mpisandbox.braspag.com.br/Scripts/BP.Mpi.3ds20.min.js'
-      : 'https://mpi.braspag.com.br/Scripts/BP.Mpi.3ds20.min.js'
-    script.async = true
-    document.body.appendChild(script)
+    setup3dsForm().then(() => {
+      const script = document.createElement('script')
+      script.src = window._braspag3dsIsSandbox
+        ? 'https://mpisandbox.braspag.com.br/Scripts/BP.Mpi.3ds20.min.js'
+        : 'https://mpi.braspag.com.br/Scripts/BP.Mpi.3ds20.min.js'
+      script.async = true
+      document.body.appendChild(script)
+    })
   })
 
   window._braspagHashCard = function (cardClient) {
