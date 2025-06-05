@@ -29,7 +29,7 @@
   const load3ds = () => new Promise((resolve) => {
     setTimeout(() => {
       resolve(null)
-    }, 6000)
+    }, 30000)
     const cardClient = window._braspag3dsCard
     window._braspag3dsCard = null
     const settings = window.storefront?.settings || {}
@@ -144,10 +144,10 @@
           console.log('3ds onReady')
           window.bpmpi_authenticate()
         },
-        onSuccess: function (e) {
+        onSuccess: function (data) {
           // Cartão elegível para autenticação, e portador autenticou com sucesso.
-          console.log('3ds onSuccess', e)
-          resolve(0)
+          console.log('3ds onSuccess', data)
+          resolve(data)
         },
         onFailure: function (e) {
           // Cartão elegível para autenticação, porém o portador finalizou com falha.
@@ -219,16 +219,27 @@
         accessToken,
         onSuccess (response) {
           if (response.PaymentToken) {
-            const data = JSON.stringify({ token: response.PaymentToken, fingerPrintId })
+            const data = { token: response.PaymentToken, fingerPrintId }
+            const sendHash = () => {
+              resolve(window.btoa(JSON.stringify(data)))
+            }
             if (window._braspag3dsToken) {
               window._braspag3dsCard = { ...cardClient, fingerPrintId }
               delete window._braspag3dsCard.cvc
               console.log('3ds load')
               load3ds()
-                .catch(console.error)
-                .finally(() => resolve(window.btoa(data)))
+                .then((out3ds) => {
+                  if (typeof out3ds === 'object' && out3ds) {
+                    data.out3ds = out3ds
+                  }
+                  sendHash()
+                })
+                .catch((err) => {
+                  console.error(err)
+                  sendHash()
+                })
             } else {
-              resolve(window.btoa(data))
+              sendHash()
             }
           } else {
             const error = new Error('Payment Token not found. Please try again or refresh the page.')

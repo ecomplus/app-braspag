@@ -1,15 +1,12 @@
 const { parseAddress, parsePaymentType } = require('./parse-utils')
-// /*
+
 const parseFraudAnalysis = (appData, params, Address, fingerPrintId) => {
   const { amount, buyer, items } = params
   const isAnalyseFirst = Boolean(appData.is_analyse_first)
   const isAnalyseAlways = Boolean(appData.is_analyse_always)
-  const isWith3ds = Boolean(appData.braspag_3ds?.client_id && appData.braspag_3ds.client_secret)
   const fraudAnalysis = {
     Sequence: isAnalyseFirst ? 'AnalyseFirst' : 'AuthorizeFirst',
     SequenceCriteria: isAnalyseFirst ? 'Always' : (isAnalyseAlways ? 'Always' : 'OnSuccess'),
-    CaptureOnLowRisk: !isAnalyseFirst && !isWith3ds,
-    VoidOnHighRisk: !isAnalyseFirst && !isWith3ds,
     Provider: 'ClearSale',
     TotalOrderAmount: (amount.total * 100),
     FingerPrintId: fingerPrintId,
@@ -32,6 +29,10 @@ const parseFraudAnalysis = (appData, params, Address, fingerPrintId) => {
         }
       })
     }
+  }
+  if (!isAnalyseFirst) {
+    fraudAnalysis.CaptureOnLowRisk = true
+    fraudAnalysis.VoidOnHighRisk = true
   }
   return fraudAnalysis
 }
@@ -102,17 +103,27 @@ module.exports = (appData, orderId, params, methodPayment, isCielo) => {
     Object.assign(body.Customer, { DeliveryAddress: Address })
 
     const fraudAnalysis = parseFraudAnalysis(appData, params, Address, hashCard.fingerPrintId)
-    Object.assign(
-      body.Payment,
-      {
-        Installments: installmentsNumber,
-        CreditCard: {
-          PaymentToken: hashCard.token
-        },
-        Capture: !fraudAnalysis.CaptureOnLowRisk,
-        FraudAnalysis: fraudAnalysis
-      }
-    )
+    Object.assign(body.Payment, {
+      Installments: installmentsNumber,
+      CreditCard: {
+        PaymentToken: hashCard.token
+      },
+      Capture: !fraudAnalysis.CaptureOnLowRisk,
+      FraudAnalysis: fraudAnalysis
+    })
+    if (hashCard.out3ds?.Cavv && hashCard.out3ds.ReferenceId) {
+      Object.assign(body.Payment, {
+        Authenticate: true,
+        ExternalAuthentication: hashCard.out3ds,
+        Capture: true
+      })
+      Object.assign(body.Payment.FraudAnalysis, {
+        Sequence: 'AuthorizeFirst',
+        SequenceCriteria: 'OnSuccess',
+        CaptureOnLowRisk: false,
+        VoidOnHighRisk: false
+      })
+    }
   } else if (methodPayment === 'account_deposit') {
     if (isCielo) {
       delete body.Payment.Provider
