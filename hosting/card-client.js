@@ -71,7 +71,7 @@
       // https://docs.cielo.com.br/gateway/docs/2-mapeando-as-classes
       const fields = {
         bpmpi_auth: true,
-        bpmpi_auth_notifyonly: true,
+        bpmpi_auth_notifyonly: false,
         bpmpi_accesstoken: window._braspag3dsToken,
         bpmpi_ordernumber: `R${(Math.random() * (999999 - 199999) + 199999)}`,
         bpmpi_currency: 'BRL',
