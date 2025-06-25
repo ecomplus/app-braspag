@@ -107,9 +107,7 @@ module.exports = (appData, orderId, params, methodPayment, isCielo) => {
       Installments: installmentsNumber,
       CreditCard: {
         PaymentToken: hashCard.token
-      },
-      Capture: !fraudAnalysis.CaptureOnLowRisk,
-      FraudAnalysis: fraudAnalysis
+      }
     })
     if (hashCard.out3ds?.Cavv && hashCard.out3ds.ReferenceId) {
       Object.assign(body.Payment, {
@@ -117,11 +115,10 @@ module.exports = (appData, orderId, params, methodPayment, isCielo) => {
         ExternalAuthentication: hashCard.out3ds,
         Capture: true
       })
-      Object.assign(body.Payment.FraudAnalysis, {
-        Sequence: 'AuthorizeFirst',
-        SequenceCriteria: 'OnSuccess',
-        CaptureOnLowRisk: false,
-        VoidOnHighRisk: false
+    } else {
+      Object.assign(body.Payment, {
+        FraudAnalysis: fraudAnalysis,
+        Capture: !fraudAnalysis.CaptureOnLowRisk
       })
     }
   } else if (methodPayment === 'account_deposit') {
