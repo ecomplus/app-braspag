@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/ecomplus/application-starter/compare/v1.2.1...v1.3.0) (2025-12-05)
+
+
+### Features
+
+* new "boleto" provider `Itau3` to replace shopline deprecation ([9e9589b](https://github.com/ecomplus/application-starter/commit/9e9589b2990065e16104fc7983b96766d4a6f365))
+
+
+### Bug Fixes
+
+* create payment without `FraudAnalysis` when 3ds is sucessful ([5c928c2](https://github.com/ecomplus/application-starter/commit/5c928c214f0eb1b13a04fdc7cb0d3f30e9dbe064))
+* **deps:** update all non-major ([#23](https://github.com/ecomplus/application-starter/issues/23)) ([b9710a4](https://github.com/ecomplus/application-starter/commit/b9710a489c17ccd96bc03d66ccbad27cfbce8fe5))
+* **deps:** update dependency axios to ^1.13.2 ([#25](https://github.com/ecomplus/application-starter/issues/25)) ([b037514](https://github.com/ecomplus/application-starter/commit/b037514db2c3f56c74573fd8e5cf476e0b25869e))
+* **deps:** update dependency express to ^4.22.0 ([#27](https://github.com/ecomplus/application-starter/issues/27)) ([bc33411](https://github.com/ecomplus/application-starter/commit/bc33411eea8914ad722ab938cf3a24539ed5793f))
+* **deps:** update dependency express to ^4.22.1 ([#29](https://github.com/ecomplus/application-starter/issues/29)) ([aaddf44](https://github.com/ecomplus/application-starter/commit/aaddf44a191f98cee611bde007bac1a174125384))
+* ensure importing 3ds script only after form setup ([5c402be](https://github.com/ecomplus/application-starter/commit/5c402beba71ce1cd8ffeb3a1824ab9cab3677c1a))
+* properly handling 3ds sending output on success to card hash and `ExternalAuthentication` ([ca7e04b](https://github.com/ecomplus/application-starter/commit/ca7e04b07a13cda4473df7ffa785e20806c300b1))
+* update 3ds script with `bpmpi_auth_notifyonly: false` ([18906fd](https://github.com/ecomplus/application-starter/commit/18906fd696fde1a58b9ed3a113e67d9665888870))
+* update card client script to set 3ds `PRD` env ([ec1b340](https://github.com/ecomplus/application-starter/commit/ec1b3409fdb702d76f758d4a8dce65dccdac462f))
+
 ### [1.2.1](https://github.com/ecomplus/application-starter/compare/v1.2.0...v1.2.1) (2025-05-23)
 
 
